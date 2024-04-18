@@ -29,11 +29,13 @@ const gameboard = (() => {
 
 
     // check if the whole board is full
-    const isBoardFull = board.reduce(function (availableCells, currentValue) {
-        currentValue.forEach(cell => cell === 0 ? availableCells += 1 : "")
+    const isBoardFull = () => {
+        board.reduce(function (availableCells, currentValue) {
+            currentValue.forEach(cell => cell === 0 ? availableCells += 1 : "")
 
-        return availableCells === 0 ? true : false
-    }, 0)
+            return availableCells === 0 ? true : false
+        }, 0)
+    }
 
     //check if a specific cell is not already occupied
     const isCellAvailable = function (x, y) {
@@ -102,7 +104,7 @@ const gameController = (() => {
 
     //this method checks if game is over 
     const isGameOver = function () {
-        if (!gameboardObj.isBoardFull) {
+        if (!gameboardObj.isBoardFull()) {
 
             for (let j = 0; j < board.length; j++) {
                 rowCheck(board, (arr, i) => arr[j][i]) // horziontal
@@ -112,7 +114,10 @@ const gameController = (() => {
             rowCheck(board, (arr, i) => arr[i][(board.length - 1) - i]) // diagonal bottom to top
         }
 
-        if (checkForWin) { return true }
+        if (checkForWin) {
+            console.log(activePlayer.name + "is the Winner")
+            return true
+        }
         return false
     }
 
@@ -134,10 +139,9 @@ const gameController = (() => {
 
         // console.log(filteredArr)
 
-        if (filteredArr.length = arr.length && notZeros !== 0) {
+        if (filteredArr.length === arr.length && notZeros !== 0) {
+            console.log(filteredArr, notZeros)
             checkForWin = true
-        } else {
-            checkForWin = false
         }
     }
 
@@ -147,9 +151,56 @@ const gameController = (() => {
 
 
 
-gameController.newRound(2, 2)
-console.log(gameController.getActivePlayer())
-gameController.newRound(2, 0)
-console.log(gameController.getActivePlayer())
-console.log(gameboard.getBoard())
+//     gameController.newRound(0, 0)
+// // console.log(gameController.getActivePlayer())
+// gameController.newRound(2, 0)
+// // console.log(gameController.getActivePlayer())
+// gameController.newRound(0, 1)
+// // // console.log(gameController.getActivePlayer())
+// gameController.newRound(2, 1)
+// // // console.log(gameController.getActivePlayer())
+// gameController.newRound(0, 2)
+// // console.log(gameController.getActivePlayer())
+// console.log(gameboard.getBoard())
+// gameController.newRound(2, 0)
+// console.log(gameboard.getBoard())
+// console.log()
+
+
+
+
+// DOM
+
+const playerOneCard = document.getElementById('playerOneCard')
+const playerTwoCard = document.getElementById('playerTwoCard')
+
+const formCardOne = playerOneCard.querySelector('form')
+const formCardTwo = playerTwoCard.querySelector('form')
+
+const buttonCardOne = playerOneCard.querySelector('button')
+const buttonCardTwo = playerTwoCard.querySelector('button')
+
+
+
+
+const playerOneName = buttonCardOne.addEventListener('click', setDomName)
+const playerTwoName = buttonCardTwo.addEventListener('click', setDomName)
+
+function setDomName(e) {
+    e.preventDefault()
+    const form = e.target.parentNode
+    const playerCard = form.parentNode
+    console.log(form)
+
+    const inputValue = form.querySelector('input').value
+    form.querySelector('input').value = ''
+    console.log(inputValue)
+
+    playerCard.classList.remove('setting')
+    playerCard.classList.add('set')
+
+    playerCard.querySelector('p').innerHTML = inputValue
+
+    return inputValue
+}
 
