@@ -11,6 +11,9 @@
 // after game is over text is show and button to reset the game is in
 
 
+
+// GAME LOGIC
+
 const gameboard = (() => {
     const rows = 3
     const columns = 3
@@ -60,8 +63,8 @@ const gameboard = (() => {
 
 const gameController = (() => {
     //names are defined here because in the future they will be retrieved solely from user input
-    const playerOneName = "jano"
-    const playerTwoName = "zdeno"
+    const playerOneName = ''
+    const playerTwoName = ''
 
     //getting board obejct and all of its values and methods
     const gameboardObj = gameboard
@@ -94,7 +97,9 @@ const gameController = (() => {
         if (!isGameOver()) {
             gameboardObj.pickCell(x, y, getActivePlayer().id)
             // console.log(activePlayer.id, x, y)
-            changeActivePlayer()
+
+            // console.log(gameboard.getBoard())
+            isGameOver()
         }
 
 
@@ -115,7 +120,7 @@ const gameController = (() => {
         }
 
         if (checkForWin) {
-            console.log(activePlayer.name + "is the Winner")
+            // console.log(activePlayer.name + " is the Winner")
             return true
         }
         return false
@@ -140,12 +145,12 @@ const gameController = (() => {
         // console.log(filteredArr)
 
         if (filteredArr.length === arr.length && notZeros !== 0) {
-            console.log(filteredArr, notZeros)
+            // console.log(filteredArr, notZeros)
             checkForWin = true
         }
     }
 
-    return { getActivePlayer, newRound }
+    return { getActivePlayer, changeActivePlayer, newRound, players, isGameOver }
 })()
 
 
@@ -170,37 +175,126 @@ const gameController = (() => {
 
 
 // DOM
-
+const container = document.querySelector('.container')
 const playerOneCard = document.getElementById('playerOneCard')
 const playerTwoCard = document.getElementById('playerTwoCard')
-
-const formCardOne = playerOneCard.querySelector('form')
-const formCardTwo = playerTwoCard.querySelector('form')
 
 const buttonCardOne = playerOneCard.querySelector('button')
 const buttonCardTwo = playerTwoCard.querySelector('button')
 
-
-
-
-const playerOneName = buttonCardOne.addEventListener('click', setDomName)
-const playerTwoName = buttonCardTwo.addEventListener('click', setDomName)
+buttonCardOne.addEventListener('click', setDomName)
+buttonCardTwo.addEventListener('click', setDomName)
 
 function setDomName(e) {
     e.preventDefault()
     const form = e.target.parentNode
     const playerCard = form.parentNode
-    console.log(form)
+    // console.log(form)
 
     const inputValue = form.querySelector('input').value
     form.querySelector('input').value = ''
-    console.log(inputValue)
+    // console.log(inputValue)
 
-    playerCard.classList.remove('setting')
     playerCard.classList.add('set')
+    playerCard.classList.remove('setting')
+
+    if (document.querySelector('.unset')) {
+        const secondCard = document.querySelector('.unset')
+        secondCard.classList.add('setting')
+        secondCard.classList.remove('unset')
+
+    }
 
     playerCard.querySelector('p').innerHTML = inputValue
 
-    return inputValue
+
+    // console.log(playerCard.querySelector('p').innerHTML)
+    // console.log(inputValue)
+
+    startGameButton()
+
+    if (gameController.players[0].name === '') {
+        gameController.players[0].name = inputValue
+    } else {
+        gameController.players[1].name = inputValue
+    }
 }
 
+
+
+function startGameButton() {
+    const playersSet = document.querySelectorAll('.set')
+    if (playersSet.length === 2) {
+        const btn = document.createElement('button')
+        btn.classList.add('btn', 'btn-start')
+        btn.innerText = 'start!'
+
+        btn.addEventListener('click', () => {
+            container.innerHTML = ``
+            const gameboardContainer = document.createElement('div')
+            gameboardContainer.classList.add('gameboard')
+
+            for (let i = 0; i < 9; i++) {
+
+                const cell = document.createElement('div')
+                cell.classList.add('cell')
+                gameboardContainer.appendChild(cell)
+
+                cell.addEventListener('click', () => {
+                    let iDivided = i % 3
+                    if (i < 3) {
+                        gameController.newRound(i, 0)
+                    } else if (i > 2 && i < 6) {
+
+                        gameController.newRound(iDivided, 1)
+                    } else {
+                        gameController.newRound(iDivided, 2)
+                    }
+
+                    if (cell.childElementCount === 0) {
+                        const shape = document.createElement('i')
+                        // console.log(gameController.getActivePlayer())
+                        if (gameController.getActivePlayer().id === 1) {
+                            shape.classList.add('fa-solid', 'fa-x')
+                        } else[
+                            shape.classList.add('fa-regular', 'fa-circle')
+                        ]
+                        cell.appendChild(shape)
+                    }
+                    isVictoryScreen()
+                    gameController.changeActivePlayer()
+                })
+
+            }
+
+            container.appendChild(gameboardContainer)
+
+        })
+
+        container.querySelector('.card-container').appendChild(btn)
+    }
+}
+
+function isVictoryScreen() {
+    if (gameController.isGameOver()) {
+        const body = document.body
+        body.innerHTML = ''
+        body.classList.add('game-over')
+
+        const span = document.createElement('span')
+        span.innerText = gameController.getActivePlayer().name
+
+        const hOne = document.createElement('h1')
+        hOne.innerText = ' is the winner!'
+        hOne.insertBefore(span, hOne.firstChild)
+
+        const newGameBtn = document.createElement('btn')
+        newGameBtn.classList.add('btn')
+        newGameBtn.innerText = 'new game!'
+        newGameBtn.addEventListener('click', () => window.location.reload())
+
+
+        body.appendChild(hOne)
+        body.appendChild(newGameBtn)
+    }
+}

@@ -6,6 +6,9 @@
 
     --clr-primary: #F4AFFF;
 
+    --clr-black-hover: #464646;
+    --clr-white-hover: #d1d1d1;
+
     --regular-border-radius: 15px;
     --small-border-radius: 5px;
 
@@ -51,6 +54,11 @@ input:focus,
     border-radius: var(--small-border-radius);
     background-color: var(--clr-black);
     color: var(--clr-white);
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: var(--clr-black-hover);
 }
 
 /* TEXT */
@@ -76,8 +84,6 @@ body>h2 {
 h3 {
     font-size: 1.5rem;
 }
-
-
 
 .card-container {
     display: flex;
@@ -123,7 +129,7 @@ h3 {
 
 .mark-icon {
     font-size: 4rem;
-    transition: all 0.5s linear;
+    /* transition: all 0.5s linear; */
 }
 
 
@@ -133,10 +139,14 @@ h3 {
     color: var(--clr-black);
 }
 
-.name-box.setting>.mark-icon {
+.btn-name:hover {
+    background-color: var(--clr-white-hover);
+}
 
+.name-box.setting>.mark-icon {
     position: absolute;
     transform: translate(-50%, -50%);
+    align-items: center;
     top: 4.5rem;
     left: 50%;
 }
@@ -144,6 +154,9 @@ h3 {
 .name-box.set,
 .name-box.unset {
     align-items: center;
+}
+
+.name-box.unset {
     gap: 0;
 }
 
@@ -158,6 +171,15 @@ h3 {
 
 
 
+.btn-start {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    bottom: 12vh;
+    left: 50%;
+    font-size: 1.25rem;
+    line-height: 100%;
+    padding: 0.75rem 4rem;
+}
 
 
 .gameboard {
@@ -177,11 +199,13 @@ h3 {
     border: 4px solid var(--clr-black);
     display: grid;
     place-items: center;
+    cursor: pointer;
 }
 
 .gameboard>.cell * {
-    font-size: 8rem;
+    font-size: calc((70vh/3)/2);
 }
+
 
 
 
@@ -223,4 +247,27 @@ h3 {
 
 .gameboard>.cell:nth-of-type(9) {
     border-bottom-right-radius: var(--regular-border-radius);
+}
+
+body.game-over {
+    background-color: var(--clr-black);
+}
+
+body.game-over h1 {
+    color: var(--clr-white);
+}
+
+body.game-over h1 span {
+    color: var(--clr-primary);
+    font-size: inherit;
+}
+
+body.game-over .btn {
+    background-color: var(--clr-white);
+    color: var(--clr-black);
+    font-weight: 500;
+}
+
+body.game-over .btn:hover {
+    background-color: var(--clr-white-hover);
 }
