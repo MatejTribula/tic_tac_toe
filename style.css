@@ -174,7 +174,7 @@ h3 {
 .btn-start {
     position: absolute;
     transform: translate(-50%, -50%);
-    bottom: 12vh;
+    bottom: 9vh;
     left: 50%;
     font-size: 1.25rem;
     line-height: 100%;

@@ -33,12 +33,26 @@ const gameboard = (() => {
 
     // check if the whole board is full
     const isBoardFull = () => {
-        board.reduce(function (availableCells, currentValue) {
-            currentValue.forEach(cell => cell === 0 ? availableCells += 1 : "")
+        let availableCells = 0
 
-            return availableCells === 0 ? true : false
-        }, 0)
-    }
+
+        board.forEach(row => {
+
+            row.forEach(cell => {
+                if (cell === 0) {
+                    availableCells += 1
+                }
+            });
+        });
+
+
+        if (availableCells === 0) {
+            return true
+        } else {
+            return false
+        }
+    };
+
 
     //check if a specific cell is not already occupied
     const isCellAvailable = function (x, y) {
@@ -277,23 +291,29 @@ const domController = (() => {
     }
 
     function isVictoryScreen() {
-        if (gameController.isGameOver()) {
+        console.log(gameboard.isBoardFull())
+        if (gameController.isGameOver() || gameboard.isBoardFull()) {
             const body = document.body
             body.innerHTML = ''
             body.classList.add('game-over')
 
-            const span = document.createElement('span')
-            span.innerText = gameController.getActivePlayer().name
-
             const hOne = document.createElement('h1')
-            hOne.innerText = ' is the winner!'
-            hOne.insertBefore(span, hOne.firstChild)
+
+            console.log(gameboard.isBoardFull())
+            if (gameboard.isBoardFull()) {
+                hOne.innerText = `it's a draw!`
+
+            } else {
+                const span = document.createElement('span')
+                span.innerText = gameController.getActivePlayer().name
+                hOne.innerText = ' is the winner!'
+                hOne.insertBefore(span, hOne.firstChild)
+            }
 
             const newGameBtn = document.createElement('btn')
             newGameBtn.classList.add('btn')
             newGameBtn.innerText = 'new game!'
             newGameBtn.addEventListener('click', () => window.location.reload())
-
 
             body.appendChild(hOne)
             body.appendChild(newGameBtn)
